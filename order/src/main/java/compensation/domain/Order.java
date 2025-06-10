@@ -1,64 +1,81 @@
 package compensation.domain;
 
-import compensation.OrderApplication;
-import compensation.domain.OrderCancelled;
 import compensation.domain.OrderPlaced;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
+import compensation.domain.OrderCancelled;
+import compensation.OrderApplication;
 import javax.persistence.*;
+import java.util.List;
 import lombok.Data;
+import java.util.Date;
+import java.time.LocalDate;
+import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Collections;
+
 
 @Entity
-@Table(name = "Order_table")
+@Table(name="Order_table")
 @Data
+
 //<<< DDD / Aggregate Root
-public class Order {
+public class Order  {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    private String productId;
-
-    private Integer qty;
-
-    private String customerId;
-
-    private Double amount;
-
-    private String status;
-
-    private String address;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    
+    
+    
+private Long id;    
+    
+    
+private String productId;    
+    
+    
+private Integer qty;    
+    
+    
+private String customerId;    
+    
+    
+private Double amount;    
+    
+    
+private String status;    
+    
+    
+private String address;
 
     @PostPersist
-    public void onPostPersist() {
+    public void onPostPersist(){
+    Inventory inventory = OrderApplication.applicationContext
+        .getBean(compensation.external.InventoryService.class)
+        .checkStock(get??);
+
+
         OrderPlaced orderPlaced = new OrderPlaced(this);
         orderPlaced.publishAfterCommit();
 
+
+
         OrderCancelled orderCancelled = new OrderCancelled(this);
         orderCancelled.publishAfterCommit();
-        // Get request from Order
-        //compensation.external.Order order =
-        //    Application.applicationContext.getBean(compensation.external.OrderService.class)
-        //    .getOrder(/** mapping value needed */);
 
+    
     }
 
-    @PreRemove
-    public void onPreRemove() {}
-
-    public static OrderRepository repository() {
-        OrderRepository orderRepository = OrderApplication.applicationContext.getBean(
-            OrderRepository.class
-        );
+    public static OrderRepository repository(){
+        OrderRepository orderRepository = OrderApplication.applicationContext.getBean(OrderRepository.class);
         return orderRepository;
     }
 
-    //<<< Clean Arch / Port Method
-    public static void updateStatus(OutOfStock outOfStock) {
-        //implement business logic here:
 
+
+
+//<<< Clean Arch / Port Method
+    public static void updateStatus(OutOfStock outOfStock){
+        
+        //implement business logic here:
+        
         /** Example 1:  new item 
         Order order = new Order();
         repository().save(order);
@@ -67,6 +84,7 @@ public class Order {
 
         /** Example 2:  finding and process
         
+
         repository().findById(outOfStock.get???()).ifPresent(order->{
             
             order // do something
@@ -76,8 +94,10 @@ public class Order {
          });
         */
 
+        
     }
-    //>>> Clean Arch / Port Method
+//>>> Clean Arch / Port Method
+
 
 }
 //>>> DDD / Aggregate Root

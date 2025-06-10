@@ -1,11 +1,14 @@
 package compensation.domain;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import compensation.InventoryApplication;
 import compensation.domain.OutOfStock;
 import compensation.domain.StockDecreased;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.*;
 import lombok.Data;
 
@@ -20,18 +23,6 @@ public class Inventory {
     private Long id;
 
     private Long stock;
-
-    @PostPersist
-    public void onPostPersist() {}
-
-    @PostUpdate
-    public void onPostUpdate() {
-        OutOfStock outOfStock = new OutOfStock(this);
-        outOfStock.publishAfterCommit();
-
-        StockDecreased stockDecreased = new StockDecreased(this);
-        stockDecreased.publishAfterCommit();
-    }
 
     public static InventoryRepository repository() {
         InventoryRepository inventoryRepository = InventoryApplication.applicationContext.getBean(
@@ -56,6 +47,7 @@ public class Inventory {
 
         /** Example 2:  finding and process
         
+
         repository().findById(orderPlaced.get???()).ifPresent(inventory->{
             
             inventory // do something
@@ -84,6 +76,7 @@ public class Inventory {
 
         /** Example 2:  finding and process
         
+
         repository().findById(orderCancelled.get???()).ifPresent(inventory->{
             
             inventory // do something
